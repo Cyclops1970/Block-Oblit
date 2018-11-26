@@ -29,8 +29,8 @@ public class GameController : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        //debug = true;
-        debug = false;
+        debug = true;
+        //debug = false;
 	}
 	
 	// Update is called once per frame

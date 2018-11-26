@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public static CameraController cc;
+    public BallControl bc;
 
     [Tooltip("What the camer will look at and rotate around.")]
     public GameObject pivot; // what the camer will look at and rotate around
@@ -38,6 +39,7 @@ public class CameraController : MonoBehaviour
 
                 float upY = transform.localPosition.y + keyboardSpeed * Time.deltaTime;
                 myCamera.transform.localPosition = new Vector3(transform.localPosition.x, upY, transform.localPosition.z);
+                bc.aimed = false;
             }
             if (Input.GetKey(KeyCode.W)) //up (was down, need to change all the code instead of just the input)
             {
@@ -46,15 +48,17 @@ public class CameraController : MonoBehaviour
 
                 float downY = transform.localPosition.y + -keyboardSpeed * Time.deltaTime;
                 myCamera.transform.localPosition = new Vector3(transform.localPosition.x, downY, transform.localPosition.z);
+                bc.aimed = false;
             }
-
             if (Input.GetKey(KeyCode.A)) //left
             {
                 transform.RotateAround(pivotPosition, Vector3.up, speed * Time.deltaTime);
+                bc.aimed = false;
             }
             if (Input.GetKey(KeyCode.D)) //right
             {
                 transform.RotateAround(pivotPosition, Vector3.down, speed * Time.deltaTime);
+                bc.aimed = false;
             }
             #endregion
         }
@@ -91,7 +95,8 @@ public class CameraController : MonoBehaviour
 
                 //make sure camera is still looking at pivot point
                 myCamera.transform.LookAt(pivotPosition);
-
+                //force a retargeting
+                bc.aimed = false;
                 #endregion
             }
         }

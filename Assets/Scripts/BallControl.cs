@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BallControl : MonoBehaviour {
+    public static BallControl bc;
+
     public Camera myCamera;
     public GameObject ball;
     public Renderer targetSprite;
-
-    Vector3 aimAt, direction;
+    [HideInInspector]
+    public Vector3 aimAt;
+    Vector3 direction;
     float startPowerTime, endPowerTime, timeInterval;
     float ballForce = 500;
     float minTimeInterval = 0.2f;
     float aimTime = 0.15f;
-    bool aimed;
+    [HideInInspector]
+    public bool aimed;
 
     Renderer ts; //targetsprite
 
@@ -24,6 +28,15 @@ public class BallControl : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
+        //aimed may be set to false if camera moves after aiming, this removes the target
+        if(aimed==false)
+        {
+            if (ts != null)
+            {
+                Destroy(ts);
+            }
+        }
+
         #region Mouse Controls
         if (GameController.gc.debug == true)
         {
@@ -39,6 +52,7 @@ public class BallControl : MonoBehaviour {
                 //Display new target sprite at selected location
                 ts = Instantiate(targetSprite, aimAt, Quaternion.identity);
                 ts.transform.LookAt(myCamera.transform.position, -Vector3.up);
+                aimed = true;
             }
 
             //Get the swipe...
@@ -46,11 +60,12 @@ public class BallControl : MonoBehaviour {
             {
                 startPowerTime = Time.time;
             }
-            if (Input.GetMouseButtonUp(1))
+            if ((Input.GetMouseButtonUp(1))&&(aimed==true))
             {
                 endPowerTime = Time.time;
 
                 ThrowBallViaMouse();
+                aimed = false;
             }
         }
         #endregion
