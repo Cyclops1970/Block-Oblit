@@ -51,3 +51,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e0a1e32bc477c54da7c0cdd3f4e981c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myCamera: {fileID: 0}
+  ball: {fileID: 0}
+  ballKilledParticle: {fileID: 0}
+  targetSprite: {fileID: 0}
+  textReady: {fileID: 0}
+  textWaiting: {fileID: 0}
+  aimAt: {x: 0, y: 0, z: 0}
+  aimed: 0

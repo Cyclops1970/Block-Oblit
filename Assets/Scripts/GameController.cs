@@ -29,7 +29,15 @@ public class GameController : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        debug = true;
+        if(SystemInfo.deviceType == DeviceType.Desktop)
+        {
+            debug = true;
+        }
+        else
+        {
+            debug = false;
+        }
+        //debug = true;
         //debug = false;
 	}
 	

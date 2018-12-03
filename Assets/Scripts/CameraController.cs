@@ -14,8 +14,10 @@ public class CameraController : MonoBehaviour
     private Vector3 pivotPosition;
 
     private Vector2 deltaPosition;
-    private float speed = 50;
-    private float keyboardSpeed = -8;
+    private float speed = 20;
+    private float keyboardSpeed = -20;
+    float maxHeight = 30;
+    float minHeight = 1;
 
     // Use this for initialization
 	void Start ()
@@ -23,31 +25,54 @@ public class CameraController : MonoBehaviour
         //setup what the camera is looking at
         pivotPosition = pivot.transform.localPosition;
         myCamera.transform.LookAt(pivotPosition);
+
+        //rotate speed for pc
+        if (SystemInfo.deviceType == DeviceType.Desktop)
+        {
+            speed = 50; ;
+        }
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
+        /* Change the keyboard controls to mouse controls at some stage -- same logic as touch
+         * https://docs.unity3d.com/ScriptReference/Input.GetAxis.html
+         * */
         myCamera.transform.LookAt(pivotPosition);
         if (GameController.gc.debug == true)
         {
-            #region Mouse Controls
-            if (Input.GetKey(KeyCode.S)) //down (was up, need to change all the code instead of just the input)
+                #region Mouse Controls
+            if (Input.GetKey(KeyCode.S)) //down 
             {
                 //works
                 //transform.RotateAround(pivotPosition, transform.right, -2 * speed * Time.deltaTime);
 
-                float upY = transform.localPosition.y + keyboardSpeed * Time.deltaTime;
-                myCamera.transform.localPosition = new Vector3(transform.localPosition.x, upY, transform.localPosition.z);
+                float downY = transform.localPosition.y + keyboardSpeed * Time.deltaTime;
+
+                //keep height >= min height
+                if(downY < minHeight)
+                {
+                    downY = minHeight;
+                }
+
+                myCamera.transform.localPosition = new Vector3(transform.localPosition.x, downY, transform.localPosition.z);
                 bc.aimed = false;
             }
-            if (Input.GetKey(KeyCode.W)) //up (was down, need to change all the code instead of just the input)
+            if (Input.GetKey(KeyCode.W)) //up 
             {
                 //works
                 //transform.RotateAround(pivotPosition, -transform.right, -2 * speed * Time.deltaTime);
 
-                float downY = transform.localPosition.y + -keyboardSpeed * Time.deltaTime;
-                myCamera.transform.localPosition = new Vector3(transform.localPosition.x, downY, transform.localPosition.z);
+                float upY = transform.localPosition.y + -keyboardSpeed * Time.deltaTime;
+                
+                //keep height <= max height
+                if(upY > maxHeight)
+                {
+                    upY = maxHeight;
+                }
+
+                myCamera.transform.localPosition = new Vector3(transform.localPosition.x, upY, transform.localPosition.z);
                 bc.aimed = false;
             }
             if (Input.GetKey(KeyCode.A)) //left
@@ -83,6 +108,12 @@ public class CameraController : MonoBehaviour
                     //myCamera.transform.RotateAround(pivotPosition, transform.right, -deltaPosition.y * speed * Time.deltaTime);
 
                     float upY = transform.localPosition.y + deltaPosition.y * Time.deltaTime;
+                    
+                    //keep height <= max height
+                    if (upY > maxHeight)
+                    {
+                        upY = maxHeight;
+                    }
                     myCamera.transform.localPosition = new Vector3(transform.localPosition.x, upY, transform.localPosition.z);
                 }
                 else
@@ -90,6 +121,12 @@ public class CameraController : MonoBehaviour
                     //myCamera.transform.RotateAround(pivotPosition, transform.right, deltaPosition.y * speed * Time.deltaTime);
 
                     float downY = transform.localPosition.y + deltaPosition.y * Time.deltaTime;
+
+                    //keep height >= min height
+                    if (downY < minHeight)
+                    {
+                        downY = minHeight;
+                    }
                     myCamera.transform.localPosition = new Vector3(transform.localPosition.x, downY, transform.localPosition.z);
                 }
 
